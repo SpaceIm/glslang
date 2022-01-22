@@ -50,6 +50,7 @@ endif()
 add_library(GenericCodeGen STATIC
     GenericCodeGen/CodeGen.cpp
     GenericCodeGen/Link.cpp)
+add_library(glslang::GenericCodeGen ALIAS GenericCodeGen)
 set_property(TARGET GenericCodeGen PROPERTY POSITION_INDEPENDENT_CODE ON)
 set_property(TARGET GenericCodeGen PROPERTY FOLDER glslang)
 
@@ -132,6 +133,7 @@ if(ENABLE_HLSL)
 endif()
 
 add_library(MachineIndependent STATIC ${MACHINEINDEPENDENT_SOURCES} ${MACHINEINDEPENDENT_HEADERS})
+add_library(glslang::MachineIndependent ALIAS MachineIndependent)
 set_property(TARGET MachineIndependent PROPERTY POSITION_INDEPENDENT_CODE ON)
 set_property(TARGET MachineIndependent PROPERTY FOLDER glslang)
 
@@ -165,6 +167,7 @@ set(GLSLANG_HEADERS
     Include/Types.h)
 
 add_library(glslang ${LIB_TYPE} ${BISON_GLSLParser_OUTPUT_SOURCE} ${GLSLANG_SOURCES} ${GLSLANG_HEADERS})
+add_library(glslang::glslang ALIAS glslang)
 set_target_properties(glslang PROPERTIES
     FOLDER glslang
     POSITION_INDEPENDENT_CODE ON

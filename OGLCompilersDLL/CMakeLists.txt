@@ -34,6 +34,7 @@
 set(SOURCES InitializeDll.cpp InitializeDll.h)
 
 add_library(OGLCompiler STATIC ${SOURCES})
+add_library(glslang::OGLCompiler ALIAS OGLCompiler)
 set_property(TARGET OGLCompiler PROPERTY FOLDER glslang)
 set_property(TARGET OGLCompiler PROPERTY POSITION_INDEPENDENT_CODE ON)
 

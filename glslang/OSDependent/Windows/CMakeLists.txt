@@ -34,6 +34,7 @@
 set(SOURCES ossource.cpp ../osinclude.h)
 
 add_library(OSDependent STATIC ${SOURCES})
+add_library(glslang::OSDependent ALIAS OSDependent)
 set_property(TARGET OSDependent PROPERTY FOLDER glslang)
 set_property(TARGET OSDependent PROPERTY POSITION_INDEPENDENT_CODE ON)
 
