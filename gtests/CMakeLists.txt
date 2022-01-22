@@ -88,7 +88,7 @@ if(BUILD_TESTING)
 
         if(ENABLE_OPT)
             target_include_directories(glslangtests
-                PRIVATE ${spirv-tools_SOURCE_DIR}/include
+                PRIVATE SPIRV-Tools-opt
             )
         endif()
 

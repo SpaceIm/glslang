@@ -48,7 +48,6 @@ if(WIN32)
 endif()
 
 if(ENABLE_GLSLANG_INSTALL)
-    install(TARGETS OSDependent EXPORT OSDependentTargets
+    install(TARGETS OSDependent EXPORT glslangTargets
             ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
-	install(EXPORT OSDependentTargets DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake)
 endif()

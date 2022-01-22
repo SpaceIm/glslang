@@ -90,17 +90,9 @@ if(WIN32 AND BUILD_SHARED_LIBS)
     endif()
 endif()
 
+target_link_libraries(SPIRV PRIVATE MachineIndependent)
 if(ENABLE_OPT)
-    target_include_directories(SPIRV
-        PRIVATE ${spirv-tools_SOURCE_DIR}/include
-        PRIVATE ${spirv-tools_SOURCE_DIR}/source
-    )
-    target_link_libraries(SPIRV PRIVATE MachineIndependent SPIRV-Tools-opt)
-    target_include_directories(SPIRV PUBLIC
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../External>
-        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/External>)
-else()
-    target_link_libraries(SPIRV PRIVATE MachineIndependent)
+    target_link_libraries(SPIRV PRIVATE SPIRV-Tools-opt)
 endif()
 
 if(WIN32)
@@ -109,30 +101,15 @@ if(WIN32)
 endif()
 
 if(ENABLE_GLSLANG_INSTALL)
-    if(BUILD_SHARED_LIBS)
-        if (ENABLE_SPVREMAPPER)
-            install(TARGETS SPVRemapper EXPORT SPVRemapperTargets
-                    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-                    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
-        endif()
-        install(TARGETS SPIRV EXPORT SPIRVTargets
-                ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-                LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-                RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
-    else()
-        if (ENABLE_SPVREMAPPER)
-            install(TARGETS SPVRemapper EXPORT SPVRemapperTargets
-                    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
-        endif()
-        install(TARGETS SPIRV EXPORT SPIRVTargets
-                ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
-    endif()
-
     if (ENABLE_SPVREMAPPER)
-        install(EXPORT SPVRemapperTargets DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake)
+        install(TARGETS SPVRemapper EXPORT glslangTargets
+                ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+                LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
     endif()
-
-    install(EXPORT SPIRVTargets DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake)
+    install(TARGETS SPIRV EXPORT glslangTargets
+            ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+            LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+            RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 
     install(FILES ${HEADERS} ${SPVREMAP_HEADERS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/glslang/SPIRV/)
 endif()

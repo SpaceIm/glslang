@@ -40,6 +40,9 @@ endif()
 if(POLICY CMP0054)
   cmake_policy(SET CMP0054 NEW)
 endif()
+if(POLICY CMP0090)
+    cmake_policy(SET CMP0090 NEW)
+endif()
 
 project(glslang LANGUAGES CXX)
 
@@ -53,6 +56,9 @@ include(GNUInstallDirs)
 
 # Needed for CMAKE_DEPENDENT_OPTION macro
 include(CMakeDependentOption)
+
+# Need for Generation of CMake config files
+include(CMakePackageConfigHelpers)
 
 option(BUILD_SHARED_LIBS "Build Shared Libraries" OFF)
 option(BUILD_EXTERNAL "Build external dependencies in /External" ON)
@@ -307,6 +313,10 @@ else()
     endif()
 endif()
 
+if(NOT BUILD_EXTERNAL AND ENABLE_OPT)
+    find_package(SPIRV-Tools CONFIG)
+endif()
+
 if(BUILD_EXTERNAL AND IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/External)
     find_host_package(PythonInterp 3 REQUIRED)
 
@@ -339,6 +349,34 @@ if(ENABLE_HLSL)
 endif()
 if(ENABLE_CTEST)
     add_subdirectory(gtests)
+endif()
+
+if(ENABLE_GLSLANG_INSTALL)
+    configure_package_config_file(
+        ${PROJECT_SOURCE_DIR}/cmake/glslangConfig.cmake.in
+        glslangConfig.cmake
+        INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/glslang
+    )
+
+    export(
+        EXPORT glslangTargets
+        NAMESPACE glslang::
+        FILE glslangTargets.cmake
+    )
+
+    install(
+        EXPORT glslangTargets
+        NAMESPACE glslang::
+        FILE glslangTargets.cmake
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/glslang
+    )
+
+    install(
+        FILES ${CMAKE_CURRENT_BINARY_DIR}/glslangConfig.cmake
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/glslang
+    )
+
+    export(PACKAGE glslang)
 endif()
 
 if(ENABLE_CTEST AND BUILD_TESTING)

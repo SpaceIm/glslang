@@ -80,14 +80,14 @@ elseif(UNIX)
     endif()
 endif()
 
-target_link_libraries(glslangValidator ${LIBRARIES})
+target_link_libraries(glslangValidator PRIVATE ${LIBRARIES})
 target_include_directories(glslangValidator PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../External>
     $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/External>)
 
 if(ENABLE_OPT)
-    target_include_directories(glslangValidator
-        PRIVATE ${spirv-tools_SOURCE_DIR}/include
+    target_link_libraries(glslangValidator
+        PRIVATE SPIRV-Tools-opt
     )
 endif()
 
@@ -104,24 +104,16 @@ if(WIN32)
 endif()
 
 if(ENABLE_GLSLANG_INSTALL)
-    install(TARGETS glslangValidator EXPORT glslangValidatorTargets
-            RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
-    install(EXPORT glslangValidatorTargets DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake)
+    install(TARGETS glslangValidator EXPORT glslangTargets
+            DESTINATION ${CMAKE_INSTALL_BINDIR})
 
     if(ENABLE_SPVREMAPPER)
-        install(TARGETS spirv-remap EXPORT spirv-remapTargets
-            RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
-        install(EXPORT spirv-remapTargets DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake)
+        install(TARGETS spirv-remap EXPORT glslangTargets
+                DESTINATION ${CMAKE_INSTALL_BINDIR})
     endif()
 
-    if(BUILD_SHARED_LIBS)
-        install(TARGETS glslang-default-resource-limits EXPORT glslang-default-resource-limitsTargets
-                ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-                LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-                RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
-    else()
-        install(TARGETS glslang-default-resource-limits EXPORT glslang-default-resource-limitsTargets
-                ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
-    endif()
-    install(EXPORT glslang-default-resource-limitsTargets DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake)
+    install(TARGETS glslang-default-resource-limits EXPORT glslangTargets
+            ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+            LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+            RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 endif()
